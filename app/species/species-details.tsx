@@ -10,7 +10,8 @@ import {
   DialogTrigger
 } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect} from "react";
+import { createClient } from '@supabase/supabase-js';
 
 // Assuming you have a species prop passed to this component
 // Adjust the type according to your actual species data structure
@@ -20,17 +21,40 @@ interface SpeciesType {
   total_population: number | null;
   kingdom: string;
   description: string;
+  author: string;
 }
 
 
-export default function SpeciesDetailsPopup({ species }: { species: SpeciesType }) {
+export default function SpeciesDetailsPopup({ species, authorid }: { species: SpeciesType, authorid: string }) {
   const [open, setOpen] = useState<boolean>(false); // This might be passed as a prop instead, depending on your dialog open/close logic
   const router = useRouter();
+  const [displayName, setDisplayName] = useState<string>(''); // Added state for display name
 
   const closeDialog = () => {
     setOpen(false);
     router.refresh(); // Or any other logic you need to run when closing the dialog
   };
+
+  useEffect(() => {
+    const fetchDisplayName = async () => {
+      const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+      try {
+        const { data, error } = await supabase
+          .from('profiles') // Assuming 'users' was a mistake and you meant 'profiles'
+          .select('display_name')
+          .eq('id', authorid)
+          .single();
+        if (error) throw error;
+        if (data) setDisplayName(data.display_name);
+      } catch (error) {
+        console.error('Error fetching display name:', error);
+      }
+    };
+
+    fetchDisplayName();
+  }, [authorid]);
+
+
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -57,6 +81,7 @@ export default function SpeciesDetailsPopup({ species }: { species: SpeciesType 
           <p><strong>Total Population:</strong> {species.total_population}</p>
           <p><strong>Kingdom:</strong> {species.kingdom}</p>
           <p><strong>Description:</strong> {species.description}</p>
+          <p><strong>Author:</strong> {displayName}</p>
         </div>
       </DialogContent>
     </Dialog>
