@@ -12,7 +12,7 @@ can cause errors with matching props and state in child components if the list o
 */
 import type { Database } from "@/lib/schema";
 import Image from "next/image";
-import SpeciesDetailsDialog from "./species-details";
+import SpeciesDetailsPopup from "./species-details";
 import EditSpeciesDialog from "./edit-species";
 type Species = Database["public"]["Tables"]["species"]["Row"];
 
@@ -29,7 +29,7 @@ export default function SpeciesCard({ species, sessionId }: { species: Species, 
       <h4 className="text-lg font-light italic">{species.common_name}</h4>
       <p>{species.description ? species.description.slice(0, 150).trim() + "..." : ""}</p>
       {/* Replace the button with the detailed view dialog. */}
-      <SpeciesDetailsDialog species={species} authorid={species.author} />
+      <SpeciesDetailsPopup species={species} authorid={species.author} />
       {editing_permission && (
         <div className="flex justify-end">
           <EditSpeciesDialog species={species} userId={sessionId} />
