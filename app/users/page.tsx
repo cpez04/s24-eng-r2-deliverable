@@ -16,7 +16,6 @@ export default async function DisplayUsers() {
   }
 
   const { data: profiles } = await supabase.from("profiles").select("email, display_name, biography");
-  console.log(profiles);
 
   return (
     <>

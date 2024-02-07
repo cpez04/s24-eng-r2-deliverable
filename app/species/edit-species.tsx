@@ -80,6 +80,30 @@ export default function EditSpeciesDialog({ userId, species }: { userId: string;
     mode: "onChange",
   });
 
+  // Event handler for trying to delete a species card
+  const deleteSpecies = async () => {
+    const confirmed = window.confirm("Are you sure you want to delete this species?");
+    if (!confirmed) return;
+
+    const supabase = createBrowserSupabaseClient();
+
+    // Deletes the species row from Supabase
+    const { error } = await supabase.from("species").delete().eq("id", species.id);
+
+    if (error) {
+      return toast({
+        title: "There was an error in deleting the species.",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+    router.refresh();
+
+    return toast({
+      title: "Species deleted!",
+    });
+  };
+
   useEffect(() => {
     // Update default values dynamically when the component re-renders
     form.reset({
@@ -282,6 +306,13 @@ export default function EditSpeciesDialog({ userId, species }: { userId: string;
               <div className="flex">
                 <Button type="submit" className="ml-1 mr-1 flex-auto">
                   Edit Species
+                </Button>
+                <Button
+                  type="submit"
+                  className="ml-1 mr-1 flex-auto bg-red-500 text-black hover:bg-red-500 hover:text-black"
+                  onClick={() => void deleteSpecies()}
+                >
+                  Delete Species
                 </Button>
               </div>
             </div>
