@@ -3,8 +3,6 @@ import { TypographyH2 } from "@/components/ui/typography";
 import { createServerSupabaseClient } from "@/lib/server-utils";
 import { redirect } from "next/navigation";
 
-
-
 export default async function DisplayUsers() {
   // Create supabase server component client and obtain user session from stored cookie
   const supabase = createServerSupabaseClient();
@@ -36,13 +34,13 @@ export default async function DisplayUsers() {
             </tr>
           </thead>
           <tbody>
-          {profiles?.map((profile, index) => (
-            <tr key={index}>
-              <td className="border border-gray-200 px-4 py-2">{profile.display_name}</td>
-              <td className="border border-gray-200 px-4 py-2">{profile.biography ?? 'No biography available'}</td>
-              <td className="border border-gray-200 px-4 py-2">{profile.email}</td>
-            </tr>
-          ))}
+            {profiles?.map((profile, index) => (
+              <tr key={index}>
+                <td className="border border-gray-200 px-4 py-2">{profile.display_name}</td>
+                <td className="border border-gray-200 px-4 py-2">{profile.biography ?? "No biography available"}</td>
+                <td className="border border-gray-200 px-4 py-2">{profile.email}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
